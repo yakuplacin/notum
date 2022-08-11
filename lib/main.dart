@@ -17,7 +17,550 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: const NormalPage(),
+    );
+  }
+}
+
+class NormalPage extends StatefulWidget {
+  const NormalPage({Key? key}) : super(key: key);
+
+  @override
+  State<NormalPage> createState() => _NormalPageState();
+}
+
+class _NormalPageState extends State<NormalPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('HesApp Uygulaması!'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.redAccent.withOpacity(0.5),
+              ),
+              height: 150,
+              width: 150,
+              child: TextButton(
+                child: Text(
+                  "Üniversite Not\nHesaplama",
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyHomePage()));
+                },
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.redAccent.withOpacity(0.5),
+              ),
+              height: 150,
+              width: 150,
+              child: TextButton(
+                child: Text(
+                  "Takdir Teşekkür\ Hesaplama",
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TakdirHomePage()));
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TakdirHomePage extends StatefulWidget {
+  const TakdirHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<TakdirHomePage> createState() => _TakdirHomePageState();
+}
+
+class _TakdirHomePageState extends State<TakdirHomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  var dersNotu = 0.0;
+  var dersHarfi = "AA";
+
+  var sistem = 1;
+
+  List<String> harfSistemiDefault = [
+    "AA",
+    "BA",
+    "BB",
+    "CB",
+    "CC",
+    "DC",
+    "DD",
+    "FD",
+    "FF",
+  ];
+
+  List<String> notSistemiAABA = [
+    "AA",
+    "BA",
+    "BB",
+    "CB",
+    "CC",
+    "DC",
+    "DD",
+    "FD",
+    "FF",
+  ];
+
+  List<double> notSistemiDefault = [
+    4.0,
+    3.5,
+    3.0,
+    2.5,
+    2.0,
+    1.5,
+    1.0,
+    0.5,
+    0.0
+  ];
+
+  List<double> notSistemiAABANots = [
+    4.0,
+    3.5,
+    3.0,
+    2.5,
+    2.0,
+    1.5,
+    1.0,
+    0.5,
+    0.0
+  ];
+
+  List<String> notSistemiAAeksi = [
+    "A",
+    "A-",
+    "B+",
+    "B",
+    "B-",
+    "C+",
+    "C",
+    "C-",
+    "D+",
+    "D",
+    "F"
+  ];
+
+  List<double> notSistemiAAeksiNots = [
+    4.0,
+    3.67,
+    3.33,
+    3.0,
+    2.67,
+    2.33,
+    2.0,
+    1.67,
+    1.33,
+    1.0,
+    0.0
+  ];
+
+  List<String> notSistemiAAAB = [
+    "AA",
+    "AB",
+    "BA",
+    "BB",
+    "BC",
+    "CB",
+    "CC",
+    "CF",
+    "DC",
+    "DD",
+    "FF"
+  ];
+
+  List<double> notSistemiAAABNots = [
+    4.0,
+    3.7,
+    3.3,
+    3.0,
+    2.7,
+    2.3,
+    2.0,
+    1.7,
+    1.3,
+    1.0,
+    0.0
+  ];
+
+  List<String> notSistemiAB1 = [
+    "A",
+    "B1",
+    "B2",
+    "B3",
+    "C1",
+    "C2",
+    "C3",
+    "F1",
+    "F2"
+  ];
+
+  List<double> notSistemiAB1Nots = [
+    4.0,
+    3.5,
+    3.25,
+    3.0,
+    2.75,
+    2.5,
+    2.0,
+    1.5,
+    0.0
+  ];
+
+  String dropdownvalue = "AA, BA, BB, CB, CC, DC, DD, FD, FF";
+  int dersSayisi = 0;
+  String term = "Dönem";
+  TextEditingController TamamlananKrediController = TextEditingController();
+  TextEditingController GenelNotOrtalamasiController = TextEditingController();
+
+  List<Ders> dersler = [];
+
+  double genelOrt = 0.0;
+  int genelKredi = 0;
+  double donemOrt = 0.0;
+  int toplamKredi = 0;
+  double toplamMultip = 0.0;
+
+  void Hesapla() {
+    setState(() {
+      donemOrt = 0;
+      toplamKredi = 0;
+      toplamMultip = 0;
+      for (int i = 0; i < dersler.length; i++) {
+        toplamKredi += dersler[i].dersCredit!;
+        toplamMultip += dersler[i].dersCredit! * dersler[i].takdirDersGrade!;
+        donemOrt = toplamMultip / toplamKredi;
+      }
+    });
+    if (term == "Genel") {
+      genelOrt = double.parse(GenelNotOrtalamasiController.text);
+      genelKredi = int.parse(TamamlananKrediController.text);
+
+      genelOrt =
+          ((genelOrt * genelKredi) + toplamMultip) / (genelKredi + toplamKredi);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('HesApp'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              child: Row(
+                children: [
+                  //Ders Sayısı
+                  Container(
+                    child: Expanded(
+                      child: ListTile(
+                        title: Text('Ders Sayısı'),
+                        trailing: DropdownButton<int>(
+                            hint: Text("Pick"),
+                            value: dersSayisi,
+                            items: <int>[
+                              0,
+                              1,
+                              2,
+                              3,
+                              4,
+                              5,
+                              6,
+                              7,
+                              8,
+                              9,
+                              10,
+                              11,
+                              12,
+                              13,
+                              14,
+                              15
+                            ].map((int value) {
+                              return new DropdownMenuItem<int>(
+                                value: value,
+                                child: new Text(value.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (newVal) {
+                              setState(() {
+                                dersSayisi = newVal!;
+                                if (dersSayisi > dersler.length) {
+                                  for (int i = dersler.length - 1;
+                                      i < dersSayisi;
+                                      i++) {
+                                    dersler.add(Ders(
+                                      dersCredit: 0,
+                                      takdirDersGrade: 0.0,
+                                      TakdirDersGradeController:
+                                          TextEditingController(),
+                                      dersCreditController:
+                                          TextEditingController(),
+                                    ));
+                                  }
+                                } else {
+                                  // maybe if will be added
+                                  for (int i = dersler.length - 1;
+                                      i >= dersSayisi;
+                                      i--) {
+                                    dersler.removeLast();
+                                  }
+                                }
+                              });
+                            }),
+                      ),
+                    ),
+                  ),
+                  //Dönem - Genel Button
+                  Container(
+                    child: Expanded(
+                      child: ListTile(
+                        title: Text('Format'),
+                        trailing: DropdownButton<String>(
+                            hint: Text("Pick"),
+                            value: term,
+                            items: <String>[
+                              "Dönem",
+                              "Genel",
+                            ].map((String value) {
+                              return new DropdownMenuItem<String>(
+                                value: value,
+                                child: new Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newVal) {
+                              setState(() {
+                                term = newVal!;
+                              });
+                            }),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            term == "Genel"
+                ? Container(
+                    child: Row(
+                      children: [
+                        //Tamamlanan Kredi
+                        Container(
+                          child: Expanded(
+                            child: ListTile(
+                              leading: Text('Önceki Dönem\nHaftalık Ders Saati',
+                                  textAlign: TextAlign.center),
+                              title: TextField(
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                controller: TamamlananKrediController,
+                                decoration: InputDecoration(
+                                  hintText: "..",
+                                ),
+                                onChanged: (_) {
+                                  setState(() {
+                                    Hesapla();
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        //Genel Not Ortalaması
+                        Container(
+                          child: Expanded(
+                            child: ListTile(
+                              leading: Text(
+                                'Önceki Dönem\nNot Ortalaması',
+                                textAlign: TextAlign.center,
+                              ),
+                              title: TextField(
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                controller: GenelNotOrtalamasiController,
+                                decoration: InputDecoration(hintText: "84.22"),
+                                onChanged: (_) {
+                                  setState(() {
+                                    Hesapla();
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
+            //Dersler---Büyük widget
+            Container(
+              child: Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: dersSayisi,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey[200],
+                              ),
+                              child: TextField(
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                  hintText: "Ders ${index + 1}",
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      Colors.deepOrangeAccent.withOpacity(0.5)),
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.center,
+                                controller: dersler[index].dersCreditController,
+                                decoration: const InputDecoration(
+                                  hintText: "Ders Saati",
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (_) {
+                                  setState(() {
+                                    dersler[index].dersCredit = int.parse(
+                                        dersler[index]
+                                            .dersCreditController!
+                                            .text);
+                                    Hesapla();
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      Colors.deepOrangeAccent.withOpacity(0.5)),
+                              alignment: Alignment.center,
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.center,
+                                controller:
+                                    dersler[index].TakdirDersGradeController,
+                                decoration: const InputDecoration(
+                                  hintText: "Ders Notu",
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (_) {
+                                  setState(() {
+                                    dersler[index].takdirDersGrade =
+                                        double.parse(dersler[index]
+                                            .TakdirDersGradeController!
+                                            .text);
+                                    Hesapla();
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                dersler.removeAt(index);
+                                dersSayisi--;
+                                Hesapla();
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            //Hesaplanan Genel Not Ortalaması
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  term == "Dönem"
+                      ? "Dönem Not Ortalaması: ${donemOrt.toStringAsFixed(2)}"
+                      : "Dönem Not Ortalaması: ${donemOrt.toStringAsFixed(2)} \nGenel Not Ortalaması: ${genelOrt.toStringAsFixed(2)}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.deepOrangeAccent.withOpacity(0.5),
+                ),
+                width: double.infinity,
+                height: 50,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -245,8 +788,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {
                         dersler = [];
                         dropdownvalue = newValue!;
-                        if (dropdownvalue ==
-                            'AA, BA, BB, CB, .., DD, FD, FF') {
+                        if (dropdownvalue == 'AA, BA, BB, CB, .., DD, FD, FF') {
                           harfSistemiDefault = notSistemiAABA;
                           sistem = 1;
                           dersSayisi = 0;
@@ -456,13 +998,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent
-                                      .withOpacity(0.5)),
+                                  color:
+                                      Colors.deepOrangeAccent.withOpacity(0.5)),
                               child: TextField(
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.center,
-                                controller:
-                                    dersler[index].dersCreditController,
+                                controller: dersler[index].dersCreditController,
                                 decoration: const InputDecoration(
                                   hintText: "Ders Kredisi",
                                   border: InputBorder.none,
@@ -487,8 +1028,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent
-                                      .withOpacity(0.5)),
+                                  color:
+                                      Colors.deepOrangeAccent.withOpacity(0.5)),
                               alignment: Alignment.center,
                               child: DropdownButton(
                                 value: dersler[index].dersLetter,
