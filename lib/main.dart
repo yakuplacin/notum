@@ -346,12 +346,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Expanded(
                           child: ListTile(
                             title: Text(
-                              'Ders Sayısı',
+                              'Ders Sayısı:',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                             trailing: DropdownButton<int>(
+                              alignment: Alignment.center,
                                 dropdownColor: Colors.red.withOpacity(0.8),
                                 hint: Text(
                                   "Pick",
@@ -382,6 +384,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     value: value,
                                     child: Text(
                                       value.toString(),
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -410,6 +413,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         dersler.removeLast();
                                       }
                                     }
+                                    Hesapla();
                                   });
                                 }),
                           ),
@@ -625,6 +629,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   alignment: Alignment.center,
                                   child: DropdownButton(
+                                    dropdownColor: Colors.red.withOpacity(0.8),
                                     value: dersler[index].dersLetter,
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     items: (sistem == 1
@@ -639,6 +644,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         value: items,
                                         child: Text(
                                           items,
+                                          style: TextStyle(color: Colors.white),
                                         ),
                                       );
                                     }).toList(),
